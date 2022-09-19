@@ -94,8 +94,8 @@ googleAnalytics = ""
     [[params.tiles.showcase]]
       title = "Aliquam"
       subtitle = "Ipsum Dolor Sit Amet"
-      image = "pic01.jpg"
-      url = "blogs/aliquam"
+      image = "LBS.jpg"
+      url = "blogs/risk_return"
 
     [[params.tiles.showcase]]
       title = "Tempus"
