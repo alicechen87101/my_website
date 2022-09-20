@@ -1,0 +1,25 @@
+---
+title: "About Mye"
+author: "Alice Chen"
+date: "2022-09-20"
+output:
+  html_document:
+    theme: flatly
+    highlight: zenburn
+    number_sections: yes
+    toc: yes
+    toc_float: yes
+    code_folding: show
+---
+
+## 
+
+![](self.jpg)
+
+My name is Alice Chen, I was born and raised in *Taiwan*. My interest in solving and analyzing problems lead to my choice of study statistics in college. I am an outgoing person and loves to meet new friends. Oil painting is my hobby and exploring galleries is my favorite thing to do in my free time. I also love wines and going to bars.
+
+#### Know me more...
+
+-   [linkedin](https://www.linkedin.com/in/chun-chen-alice-chen-ab235b17a)
+
+-   [facebook](https://www.facebook.com/profile.php?id=100003189522583)

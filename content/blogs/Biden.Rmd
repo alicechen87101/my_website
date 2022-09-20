@@ -1,0 +1,106 @@
+---
+title: "Biden’s Approval Margins"
+author: "Alice Chen"
+date: "2022-09-12"
+output:
+  html_document:
+    theme: flatly
+    highlight: zenburn
+    number_sections: yes
+    toc: yes
+    toc_float: yes
+    code_folding: show
+---
+
+```{r, setup, echo=FALSE}
+knitr::opts_chunk$set(
+  message = FALSE, 
+  warning = FALSE, 
+  tidy=FALSE,     # display code as typed
+  size="small")   # slightly smaller font for code
+options(digits = 3)
+
+# default figure size
+knitr::opts_chunk$set(
+  fig.width=6.75, 
+  fig.height=6.75,
+  fig.align = "center"
+)
+```
+
+```{r load-libraries, echo=FALSE}
+library(tidyverse)  # Load ggplot2, dplyr, and all the other tidyverse packages
+library(mosaic)
+library(ggthemes)
+library(GGally)
+library(readxl)
+library(here)
+library(skimr)
+library(janitor)
+library(broom)
+library(tidyquant)
+library(infer)
+library(openintro)
+```
+
+fivethirtyeight.com has detailed data on [all polls that track the president\'s approval](https://projects.fivethirtyeight.com/biden-approval-ratings)
+
+```{r read_GDP_data}
+
+# Import approval polls data directly off fivethirtyeight website
+approval_polllist <- read_csv('https://projects.fivethirtyeight.com/biden-approval-data/approval_polllist.csv') 
+
+glimpse(approval_polllist)
+
+```
+
+```{r reshape_GDP_data}
+
+# Use `lubridate` to fix dates, as they are given as characters.
+
+#Change eddate to date type from character
+approval_polllist$enddate <- mdy(approval_polllist$enddate)
+```
+
+## 2.1 Create a plot
+
+What we would like to do is to calculate the average net approval rate (approve- disapprove) for each week since he got into office. Later, plot the net approval for each week in 2022, along with its 95% confidence interval. There are various dates given for each poll, please use `enddate`, i.e., the date the poll ended.
+
+```{r gdp1}
+#Create line plot with confidence intervals
+approval_polllist %>% 
+  filter(lubridate::year(enddate)==2022) %>% 
+  
+  #Calculating net approval rate and week of the year
+  mutate(net_approval_rate = approve-disapprove, week_of_year = week(enddate)) %>% 
+  
+  #calculating summary stats & 95% confidence interval values for each week + each subgroup
+  group_by(week_of_year, subgroup) %>% 
+  summarise(mean_net_approval_rate = mean(net_approval_rate),
+            count = n(),
+            sd = sd(net_approval_rate),
+            t_critical = qt(0.975, count-1),
+            se_net_approval_rate = sd / sqrt(count),
+            margin_of_error = t_critical * se_net_approval_rate,
+            lower_approval_rate = mean_net_approval_rate - margin_of_error,
+            higher_approval_rate = mean_net_approval_rate + margin_of_error) %>% 
+  
+  #order by week of year
+  arrange(week_of_year) %>% 
+  
+  #plot line graph
+  ggplot(aes(x=week_of_year , y=mean_net_approval_rate, color = subgroup)) +
+  geom_line() +
+  
+  #Add confidence interval to line plots
+  geom_ribbon(aes(ymin = lower_approval_rate, ymax = higher_approval_rate), 
+              alpha = 0.1,
+              fill = "black") +
+  facet_wrap(~subgroup, nrow = 3, strip.position = "right") +
+  theme_bw() +
+  theme(legend.position = "none") +
+  labs(title = "Biden's Net Approval Ratings in 2022", 
+       subtitle = "Weekly Data, Approve-Disapprove, %",
+       x = "Week in 2022",
+       y="")
+```
