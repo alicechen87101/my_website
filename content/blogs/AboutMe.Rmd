@@ -1,5 +1,5 @@
 ---
-title: "About Mye"
+title: "About Me"
 author: "Alice Chen"
 date: "2022-09-20"
 output:
@@ -11,8 +11,6 @@ output:
     toc_float: yes
     code_folding: show
 ---
-
-## 
 
 ![](self.jpg)
 
